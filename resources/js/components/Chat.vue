@@ -27,7 +27,6 @@
                 });
         },
         methods: {
-
             sendMessage(){
                 axios.post('/messages', { body: this.textMessage});
 
