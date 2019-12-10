@@ -23,6 +23,10 @@ Route::get('/room/{room}', function (App\Room $room){
    return view('room', ['room' => $room]);
 });
 
+Route::get('start', 'StartController@index');
+Route::get('/start/send-message', 'StartController@sendMessage');
+Route::get('/start/send-private-message', 'StartController@sendPrivateMessage');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

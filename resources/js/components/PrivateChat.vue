@@ -5,7 +5,8 @@
             <div class="col-sm-8">
                 <textarea class="form-control" rows="10" readonly="">{{messages.join('\n')}}</textarea>
                 <hr>
-                <input type="text" class="form-control" v-model="textMessage" @keyup.enter="sendMessage" @keydown="actionUser">
+                <input type="text" class="form-control" v-model="textMessage" @keyup.enter="sendMessage"
+                       @keydown="actionUser">
                 <span v-if="isActive">{{isActive.name}} набирает сообщение...</span>
             </div>
             <div class="col-sm-4">
@@ -41,14 +42,14 @@
                 .here((users) => {
                     this.activeUsers = users;
                 })
-                .joining((users) => {
+                .joining((user) => {
                     this.activeUsers.push(user);
                 })
                 .leaving((user) => {
-                    this.activeUsers.splise(this.activeUsers.indexOf(user), 1);
+                    this.activeUsers.splice(this.activeUsers.indexOf(user), 1);
                 })
                 .listen('PrivateChat', ({data}) => {
-                    this.messages.push(data.body);
+                    this.messages.push(data.user.name + ': ' + data.body);
                     this.isActive = false;
                 })
                 .listenForWhisper('typing', (e) => {
@@ -62,13 +63,13 @@
         },
         methods: {
             sendMessage() {
-                axios.post('/messages', {body: this.textMessage, room_id: this.room.id});
+                axios.post('/messages', {body: this.textMessage, room_id: this.room.id, user: this.user});
 
-                this.messages.push(this.textMessage);
+                this.messages.push(`Вы: ${this.textMessage}`);
 
                 this.textMessage = '';
             },
-            actionUser(){
+            actionUser() {
                 this.channel
                     .whisper('typing', {
                         name: this.user.name
