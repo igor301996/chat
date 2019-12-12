@@ -60,6 +60,7 @@
                         this.isActive = false;
                     }, 2000);
                 });
+            this.getMessages();
         },
         methods: {
             sendMessage() {
@@ -74,7 +75,21 @@
                     .whisper('typing', {
                         name: this.user.name
                     })
+            },
+            getMessages() {
+                axios.get(`/messages/get/${this.room.id}/${this.user.id}`)
+                    .then(({data}) => {
+                        data.map(item => {
+                            let name = item.user.name === this.user.name ? 'Вы' : item.user.name;
+                            let message = `${name}: ${item.text}`;
+
+                            this.messages.push(message);
+                        });
+                    })
+                    .catch(e => {
+                        console.error(e);
+                    });
             }
-        }
+        },
     }
 </script>

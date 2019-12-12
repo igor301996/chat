@@ -27,6 +27,8 @@ Route::get('start', 'StartController@index');
 Route::get('/start/send-message', 'StartController@sendMessage');
 Route::get('/start/send-private-message', 'StartController@sendPrivateMessage');
 
+Route::get('messages/get/{room}/{user}', 'MessageController@get')->name('get');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

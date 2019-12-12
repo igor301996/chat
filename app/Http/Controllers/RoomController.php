@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Room;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller
@@ -13,7 +14,10 @@ class RoomController extends Controller
      */
     public function index()
     {
-        //
+        $user = auth()->user();
+        $user->rooms()->get();
+
+        return response()->json($user, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -34,18 +38,30 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rooms = Room::where('name', $request->input('name'))->first();
+        if (!$rooms){
+           $room = Room::create([
+               'name' => $request->input('name')
+            ]);
+
+            return response()->json($room, 201, [], JSON_UNESCAPED_UNICODE);
+        }
+
+        return [
+            'status' => 'error',
+            'msg' => 'Комната с таким именем существует: '. $request->input('name'),
+        ];
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $room
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Room $room)
     {
-        //
+        return response()->json($room, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -63,22 +79,30 @@ class RoomController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $room
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Room $room)
     {
-        //
+        $room->update([
+            'name' =>$request->input('name')
+        ]);
+
+        return response()->json($room, 200, [], JSON_UNESCAPED_UNICODE);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int  $room
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Room $room)
     {
-        //
+        $room->delete();
+
+        return response()->json([
+            'status' => 'ok',
+        ], 200, [], JSON_UNESCAPED_UNICODE);
     }
 }

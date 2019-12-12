@@ -15,6 +15,7 @@ class PrivateChat implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $data;
+
     /**
      * Create a new event instance.
      *
@@ -34,6 +35,13 @@ class PrivateChat implements ShouldBroadcast
      */
     public function broadcastOn()
     {
+        $this->saveMessage();
         return new PresenceChannel('room.' . $this->data['room_id']);
+    }
+
+    public function saveMessage()
+    {
+        $data = $this->data;
+        return \App\Message::saveMessage($data['room_id'], $data['user']['id'], $data['body']);
     }
 }

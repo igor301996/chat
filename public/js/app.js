@@ -2065,6 +2065,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.isActive = false;
       }, 2000);
     });
+    this.getMessages();
   },
   methods: {
     sendMessage: function sendMessage() {
@@ -2079,6 +2080,21 @@ __webpack_require__.r(__webpack_exports__);
     actionUser: function actionUser() {
       this.channel.whisper('typing', {
         name: this.user.name
+      });
+    },
+    getMessages: function getMessages() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/messages/get/".concat(this.room.id, "/").concat(this.user.id)).then(function (_ref2) {
+        var data = _ref2.data;
+        data.map(function (item) {
+          var name = item.user.name === _this2.user.name ? 'Вы' : item.user.name;
+          var message = "".concat(name, ": ").concat(item.text);
+
+          _this2.messages.push(message);
+        });
+      })["catch"](function (e) {
+        console.error(e);
       });
     }
   }
